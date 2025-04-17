@@ -2,7 +2,10 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import userRoutes from "./routes/userRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
+import eventsRoutes from "./routes/eventsRoutes.js"
+import contactRoutes from "./routes/contactRoutes.js"
 
 dotenv.config();
 const app = express();
@@ -13,8 +16,13 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
+
 // Routes
+app.use("/api/users", userRoutes);
 app.use("/api/news", newsRoutes);
+app.use("/api/events", eventsRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/uploads", express.static("uploads"));
 
 // Mongo connection
 mongoose.connect(process.env.MONGO_URI, {

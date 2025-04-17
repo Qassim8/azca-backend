@@ -5,13 +5,18 @@ import {
   getAllNews,
   getSingleNews,
   updateNews,
-  deleteNews
+  deleteNews,
+  addComment,
+  likeNews,
+  dislikeNews
 } from "../controllers/newsController.js";
+import path from "path";
+import { optionalToken, verifyToken } from "../middleware/verifyToken.js";
 
-const router = express.Router();
+export const router = express.Router();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, path.join("uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -21,8 +26,11 @@ const upload = multer({ storage });
 
 router.post("/", upload.single("image"), createNews);
 router.get("/", getAllNews);
-router.get("/:id", getSingleNews);
+router.get("/:id", optionalToken, getSingleNews);
 router.put("/:id", upload.single("image"), updateNews);
 router.delete("/:id", deleteNews);
+router.post("/:id/comments", addComment);
+router.post("/:id/like", verifyToken, likeNews);
+router.post("/:id/dislike", verifyToken, dislikeNews);
 
 export default router;
